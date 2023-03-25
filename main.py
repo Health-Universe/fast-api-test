@@ -18,16 +18,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class PatientData(BaseModel):
+class DataModel(BaseModel):
     weight: float
-    glucose_level: float
-    insulin_sensitivity_factor: float
 
-@app.post("/calculate")
-async def calculate_basal_insulin_dose(patient_data: PatientData):
-    basal_insulin_dose = patient_data.weight / patient_data.insulin_sensitivity_factor
-    return {"basal_insulin_dose": basal_insulin_dose}
+@app.post("/interface")
+async def calculate_basal_insulin_dose(patient_data: DataModel):
+    tdd = patient_data.weight / 4
+    basal = tdd / 2
+    return {"basal_insulin_dose": basal}
 
 @app.get("/about")
 async def about():
-    return {"about":"This is a sample application"}
+    return {
+      "schema_version": "v1",
+      "name": "Basal Insulin Dose.",
+      "description": "Model for calculating a patients basal insulin dose. Requires weight in lbs.",
+      "auth": {
+        "type": "none"
+      },
+      "api": {
+        "type": "openapi",
+        "is_user_authenticated": false
+      },
+      "contact_email": "example@healthuniverse.com",
+    }
